@@ -15,7 +15,7 @@ function riskAssessment(user, context, callback) {
                 break;
             case 'high':
                 shouldPromptMfa = false;
-                shouldSendNotification = false
+                shouldSendNotification = false;
                 break;
             case 'neutral':
                 // When this assessor has no useful information about the confidence, 
