@@ -1,23 +1,29 @@
 function riskAssessment(user, context, callback) {
+    /**
+     * This rule checks for risK assessment and sends security notification 
+     * to the end user if the user is logging in from a new device.
+     */
     const riskAssessment = context.riskAssessment;
     const enrolledFactors = user.multifactor || [];
-    let shouldPromptMfa, shouldSendNotification;
-    switch (riskAssessment.assessments.NewDevice.confidence) {
-        case 'low':
-        case 'medium':
-            shouldPromptMfa = true;
-            shouldSendNotification = true;
-            break;
-        case 'high':
-            shouldPromptMfa = false;
-            shouldSendNotification = false
-            break;
-        case 'neutral':
-            // When this assessor has no useful information about the confidence, 
-            // do not prompt MFA.
-            shouldPromptMfa = false;
-            shouldSendNotification = false;
-            break;
+    let shouldPromptMfa = false, shouldSendNotification = false;
+    if (riskAssessment && riskAssessment.assessments) {
+        switch (riskAssessment.assessments.NewDevice.confidence) {
+            case 'low':
+            case 'medium':
+                shouldPromptMfa = true;
+                shouldSendNotification = true;
+                break;
+            case 'high':
+                shouldPromptMfa = false;
+                shouldSendNotification = false
+                break;
+            case 'neutral':
+                // When this assessor has no useful information about the confidence, 
+                // do not prompt MFA.
+                shouldPromptMfa = false;
+                shouldSendNotification = false;
+                break;
+        }
     }
 
     if (shouldSendNotification) {
